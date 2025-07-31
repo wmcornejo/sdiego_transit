@@ -15,7 +15,7 @@ onMounted(() => {
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map)
-  fetch('/data/transit_stops_datasd.geojson')
+  fetch('data/transit_stops_datasd.geojson')
     .then(res => res.json())
     .then(data => {
       L.geoJSON(data, {
@@ -31,14 +31,14 @@ onMounted(() => {
         }
       }).addTo(map)
     })
-  fetch('/data/transit_routes_datasd.geojson')
+  fetch('data/transit_routes_datasd.geojson')
     .then(res => {
       return res.json()
     })
     .then(data => {
       L.geoJSON(data).addTo(map)
     })
-  fetch('/data/Census Tracts 2010_20250731.geojson')
+  fetch('data/Census Tracts 2010_20250731.geojson')
     .then(res => {
       return res.json()
     })
