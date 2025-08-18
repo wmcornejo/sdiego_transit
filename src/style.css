@@ -6,7 +6,7 @@
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
-
+  overflow: auto;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -26,7 +26,8 @@ body {
   margin: 0;
   height: 100vh;
   width: 100vw;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 html, body {
   height: 100%;
@@ -37,7 +38,10 @@ h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
-
+h2{
+  font-size: 2.4em;
+  line-height: 1.2;
+}
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -63,19 +67,26 @@ button:focus-visible {
 
 #app {
   height: 100%;
+  min-height: 100vh;   
   width: 100%;
   margin: 0;
   padding: 0;
-}
-
-.map-row {
+  flex-direction: column;
   display: flex;
-  gap: 16px;
+}
+.main-content {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
 }
 .map {
-  width: 100%;
+  width: 1000px;
   height: 500px;
-  flex: 1;
+  position: relative;
+  margin-bottom: 20px;
+  margin: 0 auto;
+
   min-width: 0;
 }
 @media (prefers-color-scheme: light) {
@@ -105,17 +116,18 @@ button:focus-visible {
   margin-top: 20px;
   width: 250px;
 }
-.map-overlay {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  background: #fff;
-  margin-right: 20px;
-  font-family: Arial, sans-serif;
-  overflow: auto;
-  border-radius: 3px;
-}
 
+.map-overlay {
+  position: absolute; /* ✅ make it float on the map */
+  top: 10px;
+  right: 10px;
+  background: #fff;
+  padding: 10px;
+  font-family: Arial, sans-serif;
+  border-radius: 3px;
+  box-shadow: 0 1px 2px rgba(0 0 0 0.1);
+  z-index: 10;
+}
 #legend {
   padding: 10px;
   box-shadow: 0 1px 2px rgba(0 0 0 0.1);
