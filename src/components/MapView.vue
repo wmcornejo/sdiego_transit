@@ -18,6 +18,7 @@
 
     <div id="map1" class="map">
       <div class="map-overlay" id="legend"></div>
+      <div class="map-overlay2" id="title">Total estimate of workers (16 years and over) who have a travel time to work of 60 or more minutes</div>
     </div>
 
     <h2>Transit Challenges</h2>
@@ -61,44 +62,48 @@ onMounted(() => {
   })
   map1.addControl(new mapboxgl.FullscreenControl());
   map1.on('load', async () => {
-    const [tractsGeojson, stopsGeojson, routesGeojson] = await Promise.all([
-      fetch('data/ACS_2023_b.geojson').then(res => res.json()),
-      fetch('data/transit_stops_datasd.geojson').then(res => res.json()),
+    const [tractsGeojson, routesGeojson] = await Promise.all([
+      fetch('data/ACS_2023_c.geojson').then(res => res.json()),
       fetch('data/transit_routes_datasd.geojson').then(res => res.json())
     ]);
-    tractsGeojson.features.forEach(tract => {
-      const ptsWithin = turf.pointsWithinPolygon(stopsGeojson, tract);
-      tract.properties.transit_stop_count = ptsWithin.features.length;
-    });
     map1.addSource('tracts', {
       type: 'geojson',
       data: tractsGeojson
     })
-
+    map1.addSource('transit_routes', {
+      type: 'geojson',
+      data: routesGeojson
+    })
     map1.addLayer({
       // change to number of stops
       id: 'tracts-fill',
       type: 'fill',
       source: 'tracts',
       paint: {
-        // Example: Color by median income (replace 'median_income' with your column name)
+        // Total Estimate of workers 16 years and over who have a travel time to work of 60 or more minutes
         'fill-color': [
           'interpolate',
           ['linear'],
-          ['get', 'S1701_C01_001E'], // Property to style by
-          0, '#ffffcc',  // Lower values
-          2288, '#a1dab4',  // Middle values
-          3585, '#41b6c4',   // Higher values
-          4560, '#2c7fb8',  // Highest values
-          5590, '#253494'
+          ['get', 'S0802_C01_089E'], // Property to style by
+          5, '#ffffcc',  // Lower values
+          10, '#a1dab4',  // Middle values
+          20, '#41b6c4',   // Higher values
+          32, '#2c7fb8'  // Highest values
         ],
         'fill-opacity': 0.9,
         // Optional: Add outline when hovered
         'fill-outline-color': '#000'
       }
     })
-
-
+    map1.addLayer({
+      id: 'trasit-routes',
+      type: 'line',
+      source: 'transit_routes',
+      paint: {
+        'line-color': '#ff0000',
+        'line-width': 0.3
+      }
+    })
 
 
     map1.on('mousemove', (event) => {
@@ -112,8 +117,8 @@ onMounted(() => {
         closeOnClick: false
     });
     
-    const layers = ['< 120', '< 260', '< 340', '< 1000', '> 1000'];
-    const colors = ['#ffffcc', '#a1dab4', '#41b6c4', '#2c7fb8', '#253494'];
+    const layers = ['0-5', '5-10', '10-20', '20-32'];
+    const colors = ['#ffffcc', '#a1dab4', '#41b6c4', '#2c7fb8'];
     const legend = document.getElementById('legend');
 
     layers.forEach((layer, i) => {
@@ -129,6 +134,16 @@ onMounted(() => {
       item.appendChild(value);
       legend.appendChild(item);
     });
+    // append transit routes to legend
+    const transitItem = document.createElement('div');
+    const transitKey = document.createElement('span');
+    transitKey.className = 'legend-key-line';
+    transitKey.style.backgroundColor = '#ff0000';
+    const transitValue = document.createElement('span');
+    transitValue.innerHTML = 'Transit Routes';
+    transitItem.appendChild(transitKey);
+    transitItem.appendChild(transitValue);
+    legend.appendChild(transitItem);
   })
 })
 </script>
